@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="log.png">
+    <title>Jahhaza's Quiz</title>
+    <!-- for icons  -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <!-- bootstrap  -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- for swiper slider  -->
+    <link rel="stylesheet" href="assets/css/swiper-bundle.min.css">
+
+    <!-- fancy box  -->
+    <link rel="stylesheet" href="assets/css/jquery.fancybox.min.css">
+    <!-- custom css  -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Additional styles for the profile section */
+        .profile-content {
+            padding: 60px 0;
+        }
+        
+        .profile-divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #d4af37, transparent);
+            margin: 40px auto;
+            width: 80%;
+        }
+        
+        .about-me-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .profile-photo {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid #d4af37;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .about-me-text {
+            flex: 1;
+            min-width: 300px;
+            max-width: 600px;
+        }
+        
+        .about-me-text h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        
+        .about-me-text p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        
+        /* Search functionality styles */
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .search-result-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .search-result-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .search-result-item h4 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .search-result-item p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .search-highlight {
+            background-color: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .no-results {
+            padding: 15px;
+            text-align: center;
+            color: #999;
+        }
+        
+        .header-search-form {
+            position: relative;
+        }
+        
+        .form-input {
+            padding-right: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .about-me-section {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-photo {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .search-results {
+                position: fixed;
+                top: 70px;
+                left: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body class="body-fixed">
+    <!-- start of header  -->
+    <header class="site-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="header-logo">
+                        <a href="index.html">
+                            <img src="logo.png" width="160" height="36" alt="Logo">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-10">
+                    <div class="main-navigation">
+                        <button class="menu-toggle"><span></span><span></span></button>
+                        <nav class="header-menu">
+                            <ul class="menu food-nav-menu">
+                                <li><a href="#homepage">Home</a></li>
+                                <li><a href="#profile">Profile</a></li>
+                                <li><a href="#hometown">Hometown</a></li>
+                                <li><a href="#food">Dishes</a></li>
+                                <li><a href="#tourist">Destinations</a></li>
+                            </ul>
+                        </nav>
+                        <div class="header-right">
+                            <form action="#" class="header-search-form for-des" id="searchForm">
+                                <input type="search" class="form-input" id="searchInput" placeholder="Search Something">
+                                <button type="submit">
+                                    <i class="uil uil-search"></i>
+                                </button>
+                                <div class="search-results" id="searchResults"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="viewport">
+        <div id="js-scroll-content">
+            <!-- Homepage -->
+            <section class="fullscreen-section" id="homepage">
+                <h1 class="h2-title">Jahhaza's Hometown</h1>
+            </section>
+
+            <!-- Profile Section -->
+            <section class="profile-tap section bg-light" id="profile">
+                <div class="sec-wp">
+                    <div class="container">
+                        <div class="row" id="gallery">
+                            <div class="col-lg-10 m-auto">
+                                <div class="profile-tap-img-slider" id="icon">
+                                    <div class="swiper-wrapper">
+                                        <a href="assets/images/bg8.jpg" data-fancybox="table-slider"
+                                            class="profile-tap-img back-img swiper-slide"
+                                            style="background-image: url(assets/images/bg8.jpg)"></a>
+                                        <a href="assets/images/bg9.jpg" data-fancybox="table-slider"
+                                            class="profile-tap-img back-img swiper-slide"
+                                            style="background-image: url(assets/images/bg16.jpg)"></a>
+                                        <a href="assets/images/bg10.jpg" data-fancybox="table-slider"
+                                            class="profile-tap-img back-img swiper-slide"
+                                            style="background-image: url(assets/images/bg10.jpg)"></a>
+                                        <a href="assets/images/bg11.jpg" data-fancybox="table-slider"
+                                            class="profile-tap-img back-img swiper-slide"
+                                            style="background-image: url(assets/images/bg11.jpg)"></a>
+                                        <a href="assets/images/bg12.jpg" data-fancybox="table-slider"
+                                            class="profile-tap-img back-img swiper-slide"
+                                            style="background-image: url(assets/images/bg12.jpg)"></a>
+                                        <a href="assets/images/bg14.jpg" data-fancybox="table-slider"
+                                            class="profile-tap-img back-img swiper-slide"
+                                            style="background-image: url(assets/images/bg13.jpg)"></a>
+                                        <a href="assets/images/bg13.jpg" data-fancybox="table-slider"
+                                            class="profile-tap-img back-img swiper-slide"
+                                            style="background-image: url(assets/images/bg15.jpg)"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Divider between sliders and about me section -->
+                    <div class="profile-divider"></div>
+                    
+                    <!-- About Me Section -->
+                    <div class="container profile-content">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="about-me-section">
+                                    <div class="profile-photo">
+                                        <img src="assets/images/myphoto.png" alt="Jahhaza's Photo">
+                                    </div>
+                                    <div class="about-me-text">
+                                        <h2>About Me</h2>
+                                        <p>Hello! I'm Jahhaza Assiqooya. I was born and raised in Jember, East Java, a beautiful region known for its rich culture, delicious cuisine, and stunning natural landscapes.</p>
+                                        <p>As someone who loves my hometown, I created this website to showcase the beauty and uniqueness of Jember. From its famous tobacco plantations to its beautiful beaches like Papuma and Watu Ulo, Jember has so much to offer.</p>
+                                        <p>Thank you for visiting my website. I hope you enjoy learning about Jember as much as I enjoy sharing it with you!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Video -->
+            <section class="section" id="hometown">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="text-center mb-5">
+                                <div class="mb-4">
+                                    <h2 class="h2-title">Jember Nusantara</span></h2>
+                                </div>
+                                <p>Jember is a regency located in East Java Province, Indonesia. Its capital is<br>Jember City, often referred to as the "City of Tobacco" due to its significant tobacco<br>plantations. This regency is situated in the eastern part of Java Island, in the Tapal Kuda region.<br>It shares its borders with Probolinggo Regency to the north, Lumajang Regency to the west,<br>the Indian Ocean to the south, and Bondowoso Regency to the east. Jember is known for its<br>fertile agricultural land, beautiful beaches, and vibrant cultural festivals.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-8 m-auto">
+                            <div class="">
+                                <div class="about-video-img" style="background-image: url(assets/images/bgtop.png);">
+                                </div>
+                                <div class="play-btn-wp">
+                                    <a href="assets/images/video.mp4" data-fancybox="video" class="play-btn">
+                                        <i class="uil uil-play"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dishes -->
+            <section style="background-image: url(assets/images/menu-bg.png);"
+                class="our-menu section bg-light repeat-img" id="food">
+                <div class="sec-wp">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="text-center mb-5">
+                                    <h2 class="h2-title">Jember<br>Traditional Foods & Souvenirs</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dish-wp">
+                            <div class="row">
+                                <div class="col-lg-12 m-auto">
+                                    <div class="dish-tab text-center">
+                                        <ul class="filters">
+                                            <div class="filter-active"></div>
+                                            <li class="filter" data-filter=".all, .main-dish, .souvenir">
+                                                All
+                                            </li>
+                                            <li class="filter" data-filter=".main-dish">
+                                                Main Dishes
+                                            </li>
+                                            <li class="filter" data-filter=".souvenir">
+                                                Souvenirs
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-list-row">
+                            <div class="row g-xxl-5 bydefault_show" id="menu-dish">
+
+                                <!-- 1. Pecel Pincuk -->
+                                <div class="col-lg-4 col-sm-6 dish-box-wp main-dish" data-cat="main-dish">
+                                    <div class="dish-box text-center">
+                                        <div class="dist-img">
+                                            <img src="assets/images/dish/pecelpincuk.png" alt="Pecel Pincuk">
+                                        </div>
+                                        <div class="des-text">
+                                            <h3 class="h3-title">Pecel Pincuk</h3>
+                                            <p>Traditional rice dish served on banana leaves with fresh vegetables, rich peanut sauce, and various side dishes. A authentic Jember culinary delight.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 2. Soto Jember -->
+                                <div class="col-lg-4 col-sm-6 dish-box-wp main-dish" data-cat="main-dish">
+                                    <div class="dish-box text-center">
+                                        <div class="dist-img">
+                                            <img src="assets/images/dish/sotojember.png" alt="Soto Jember">
+                                        </div>
+                                        <div class="des-text">
+                                            <h3 class="h3-title">Soto Jember</h3>
+                                            <p>Signature chicken soup with clear aromatic broth, served with rice, bean sprouts, and fried shallots. Comfort food that warms the heart.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 3. Tape Jember (Oleh-oleh) -->
+                                <div class="col-lg-4 col-sm-6 dish-box-wp souvenir" data-cat="souvenir">
+                                    <div class="dish-box text-center">
+                                        <div class="dist-img">
+                                            <img src="assets/images/dish/tapejember.png" alt="Tape Jember">
+                                        </div>
+                                        <div class="des-text">
+                                            <h3 class="h3-title">Tape Jember</h3>
+                                            <p>Fermented cassava snack, sweet with slight alcoholic taste. The most famous souvenir from Jember, perfect as gift for family and friends.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 4. Sego Tempong -->
+                                <div class="col-lg-4 col-sm-6 dish-box-wp main-dish" data-cat="main-dish">
+                                    <div class="dish-box text-center">
+                                        <div class="dist-img">
+                                            <img src="assets/images/dish/segotempong.png" alt="Sego Tempong">
+                                        </div>
+                                        <div class="des-text">
+                                            <h3 class="h3-title">Sego Tempong</h3>
+                                            <p>Extremely spicy rice dish with various side dishes. For those who dare to challenge their taste buds with Jember's legendary spiciness.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 5. Kripik Tempe (Oleh-oleh) -->
+                                <div class="col-lg-4 col-sm-6 dish-box-wp souvenir" data-cat="souvenir">
+                                    <div class="dish-box text-center">
+                                        <div class="dist-img">
+                                            <img src="assets/images/dish/kripiktempe.png" alt="Kripik Tempe Jember">
+                                        </div>
+                                        <div class="des-text">
+                                            <h3 class="h3-title">Kripik Tempe Jember</h3>
+                                            <p>Kripik Tempe Jember is one of the typical souvenirs made from thinly sliced tempeh that is fried until crispy. With a crunchy flour coating.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 6. Pia Edamame (Oleh-oleh) -->
+                                <div class="col-lg-4 col-sm-6 dish-box-wp souvenir" data-cat="souvenir">
+                                    <div class="dish-box text-center">
+                                        <div class="dist-img">
+                                            <img src="assets/images/dish/piaedamame.png" alt="Pia Edamame Jember">
+                                        </div>
+                                        <div class="des-text">
+                                            <h3 class="h3-title">Pia Edamame Jember</h3>
+                                            <p>Pia Edamame Jember is a unique and innovative souvenir made from fresh edamame beans grown in Jember's fertile highlands.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 7. Jenang Waluh (Oleh-oleh) -->
+                                <div class="col-lg-4 col-sm-6 dish-box-wp souvenir" data-cat="souvenir">
+                                    <div class="dish-box text-center">
+                                        <div class="dist-img">
+                                            <img src="assets/images/dish/jenangwaluh.png" alt="Jenang Waluh Jember">
+                                        </div>
+                                        <div class="des-text">
+                                            <h3 class="h3-title">Jenang Waluh Jember</h3>
+                                            <p>Jenang Waluh Jember is a traditional pumpkin pudding that showcases the agricultural richness of Jember's pumpkin harvest. This sweet, dense confection is made from locally grown pumpkins cooked.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 8. Prol Tape (Oleh-oleh) -->
+                                <div class="col-lg-4 col-sm-6 dish-box-wp souvenir" data-cat="souvenir">
+                                    <div class="dish-box text-center">
+                                        <div class="dist-img">
+                                            <img src="assets/images/dish/proltape.png" alt="Prol Tape">
+                                        </div>
+                                        <div class="des-text">
+                                            <h3 class="h3-title">Prol Tape</h3>
+                                            <p>Traditional cake made from fermented cassava (tape) with soft texture and sweet taste. Unique Jember souvenir that combines tape with cake innovation.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Destinations -->
+                <section class="des-sec section" id="tourist">
+                    <div class="sec-wp">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="sec-title text-center mb-5">
+                                        <h2 class="h2-title">Tourist Destinations</span></h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- 1 -->
+                                <div class="col-lg-4">
+                                    <div class="des-box">
+                                        <div class="des-img back-img"
+                                            style="background-image: url(assets/images/bg5.jpg);"></div>
+                                        <div class="des-text">
+                                            <a href="#" class="h4-title">Papuma Beach</a>
+                                            <p>Papuma Beach is one of Jember's most famous tourist destinations, known for its white sand and unique rock formations. The name "Papuma" is an abbreviation of "Pasir Putih Malikan," which means Malikan White Sand.</p>
+                                            <a href="https://maps.app.goo.gl/N5h4bZhwnxCXj2Pb8" target="_blank" class="sec-btn">Location</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 2 -->
+                                <div class="col-lg-4">
+                                    <div class="des-box">
+                                        <div class="des-img back-img"
+                                            style="background-image: url(assets/images/bg7.jpg);"></div>
+                                        <div class="des-text">
+                                            <a href="#" class="h4-title">Jember Mini Zoo</a>
+                                            <p>Jember Mini Zoo is a family-friendly attraction featuring various animal species from Indonesia and around the world. It offers interactive experiences, animal shows, and educational programs.</p>
+                                            <a href="https://maps.app.goo.gl/QE2qEBvkAuRmueQU6" target="_blank" class="sec-btn">Location</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 3 -->
+                                <div class="col-lg-4">
+                                    <div class="des-box">
+                                        <div class="des-img back-img"
+                                            style="background-image: url(assets/images/bg6.jpg);"></div>
+                                        <div class="des-text">
+                                            <a href="#" class="h4-title">Watu Ulo Beach</a>
+                                            <p>Watu Ulo Beach is known for its dramatic coastline and the snake-like rock formation that gives the beach its name ("Watu Ulo" means "Snake Rock" in Javanese). The powerful waves and scenic views.</p>
+                                            <a href="https://maps.app.goo.gl/5wssF6vt7jFDZSwq6" target="_blank" class="sec-btn">Location</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 4 -->
+                                <div class="col-lg-4">
+                                    <div class="des-box">
+                                        <div class="des-img back-img"
+                                            style="background-image: url(assets/images/bg4.jpg);"></div>
+                                        <div class="des-text">
+                                            <a href="#" class="h4-title">Teluk Love</a>
+                                            <p>Teluk Love (Love Bay) is a beautiful hidden beach in Jember with a unique heart-shaped bay. This picturesque spot offers stunning coastal views, clear blue waters, and perfect sunset moments.</p>
+                                            <a href="https://maps.app.goo.gl/bS6ZHNZAKvDLk6Ea7" target="_blank" class="sec-btn">Location</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 5 -->
+                                <div class="col-lg-4">
+                                    <div class="des-box">
+                                        <div class="des-img back-img"
+                                            style="background-image: url(assets/images/bg9.jpg);"></div>
+                                        <div class="des-text">
+                                            <a href="#" class="h4-title">Jember Fashion Carnaval</a>
+                                            <p>The Jember Fashion Carnaval is an internationally renowned fashion event held annually. It features extravagant costumes, creative designs, and vibrant parades that attract visitors from around the world.</p>
+                                            <a href="https://maps.app.goo.gl/fMmghJZ8CrcLppUJ9" target="_blank" class="sec-btn">Location</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 6 -->
+                                <div class="col-lg-4">
+                                    <div class="des-box">
+                                        <div class="des-img back-img"
+                                            style="background-image: url(assets/images/bg14.jpg);"></div>
+                                        <div class="des-text">
+                                            <a href="#" class="h4-title">Tancak Waterfall</a>
+                                            <p>Tancak Waterfall is a stunning natural attraction located in Jember, East Java. Surrounded by lush green forests, this waterfall offers a refreshing escape with its cool waters and scenic beauty.</p>
+                                            <a href="https://maps.app.goo.gl/w1brFf8ABLvqPoHd7" target="_blank" class="sec-btn">Location</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            <!-- Footer  -->
+            <footer class="" id="contact">
+                <div class="bottom-footer">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-12 text-center">
+                                <div class="copyright-text">
+                                    <div class="social-icon">
+                                        <ul>
+                                            <li>
+                                                <a href="#">
+                                                    <i class="uil uil-whatsapp"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <i class="uil uil-google-drive"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="https://github.com/jahhaza" target="_blank">
+                                                    <i class="uil uil-github-alt"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <p>By: <span class="name">5025241019 </span>Jahhaza Assiqooyah
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="scrolltop"><i class="uil uil-angle-up"></i></button>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- jquery  -->
+    <script src="assets/js/jquery-3.5.1.min.js"></script>
+    <!-- bootstrap -->
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+
+    <!-- fontawesome  -->
+    <script src="assets/js/font-awesome.min.js"></script>
+
+    <!-- swiper slider  -->
+    <script src="assets/js/swiper-bundle.min.js"></script>
+
+    <!-- mixitup -- filter  -->
+    <script src="assets/js/jquery.mixitup.min.js"></script>
+
+    <!-- fancy box  -->
+    <script src="assets/js/jquery.fancybox.min.js"></script>
+
+    <!-- parallax  -->
+    <script src="assets/js/parallax.min.js"></script>
+
+    <!-- gsap  -->
+    <script src="assets/js/gsap.min.js"></script>
+
+    <!-- scroll trigger  -->
+    <script src="assets/js/ScrollTrigger.min.js"></script>
+    <!-- scroll to plugin  -->
+    <script src="assets/js/ScrollToPlugin.min.js"></script>
+    <!-- rellax  -->
+    <!-- <script src="assets/js/rellax.min.js"></script> -->
+    <!-- <script src="assets/js/rellax-custom.js"></script> -->
+    <!-- smooth scroll  -->
+    <script src="assets/js/smooth-scroll.js"></script>
+    <!-- custom js  -->
+    <script src="main.js"></script>
+
+    <script>
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const searchResults = document.getElementById('searchResults');
+            const searchForm = document.getElementById('searchForm');
+            
+            // Data to search through
+            const searchData = [
+                {
+                    title: "About Me",
+                    content: "Hello! I'm Jahhaza Assiqooya. I was born and raised in Jember, East Java...",
+                    section: "profile",
+                    type: "profile"
+                },
+                {
+                    title: "Jember Information",
+                    content: "Jember is a regency located in East Java Province, Indonesia...",
+                    section: "hometown",
+                    type: "information"
+                },
+                {
+                    title: "Pecel Pincuk",
+                    content: "Traditional rice dish served on banana leaves with fresh vegetables...",
+                    section: "food",
+                    type: "dish"
+                },
+                {
+                    title: "Soto Jember",
+                    content: "Signature chicken soup with clear aromatic broth...",
+                    section: "food",
+                    type: "dish"
+                },
+                {
+                    title: "Tape Jember",
+                    content: "Fermented cassava snack, sweet with slight alcoholic taste...",
+                    section: "food",
+                    type: "souvenir"
+                },
+                {
+                    title: "Sego Tempong",
+                    content: "Extremely spicy rice dish with various side dishes...",
+                    section: "food",
+                    type: "dish"
+                },
+                {
+                    title: "Kripik Tempe Jember",
+                    content: "Kripik Tempe Jember is one of the typical souvenirs...",
+                    section: "food",
+                    type: "souvenir"
+                },
+                {
+                    title: "Pia Edamame Jember",
+                    content: "Pia Edamame Jember is a unique and innovative souvenir...",
+                    section: "food",
+                    type: "souvenir"
+                },
+                {
+                    title: "Jenang Waluh Jember",
+                    content: "Jenang Waluh Jember is a traditional pumpkin pudding...",
+                    section: "food",
+                    type: "souvenir"
+                },
+                {
+                    title: "Prol Tape",
+                    content: "Traditional cake made from fermented cassava (tape)...",
+                    section: "food",
+                    type: "souvenir"
+                },
+                {
+                    title: "Papuma Beach",
+                    content: "Papuma Beach is one of Jember's most famous tourist destinations...",
+                    section: "tourist",
+                    type: "destination"
+                },
+                {
+                    title: "Jember Mini Zoo",
+                    content: "Jember Mini Zoo is a family-friendly attraction...",
+                    section: "tourist",
+                    type: "destination"
+                },
+                {
+                    title: "Watu Ulo Beach",
+                    content: "Watu Ulo Beach is known for its dramatic coastline...",
+                    section: "tourist",
+                    type: "destination"
+                },
+                {
+                    title: "Teluk Love",
+                    content: "Teluk Love (Love Bay) is a beautiful hidden beach...",
+                    section: "tourist",
+                    type: "destination"
+                },
+                {
+                    title: "Jember Fashion Carnaval",
+                    content: "The Jember Fashion Carnaval is an internationally renowned...",
+                    section: "tourist",
+                    type: "destination"
+                },
+                {
+                    title: "Tancak Waterfall",
+                    content: "Tancak Waterfall is a stunning natural attraction...",
+                    section: "tourist",
+                    type: "destination"
+                }
+            ];
+            
+            // Function to highlight search terms in text
+            function highlightText(text, searchTerm) {
+                if (!searchTerm) return text;
+                
+                const regex = new RegExp(`(${searchTerm})`, 'gi');
+                return text.replace(regex, '<span class="search-highlight">$1</span>');
+            }
+            
+            // Function to perform search
+            function performSearch(searchTerm) {
+                if (searchTerm.length < 2) {
+                    searchResults.style.display = 'none';
+                    return;
+                }
+                
+                const results = searchData.filter(item => {
+                    return item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                           item.content.toLowerCase().includes(searchTerm.toLowerCase());
+                });
+                
+                displayResults(results, searchTerm);
+            }
+            
+            // Function to display search results
+            function displayResults(results, searchTerm) {
+                searchResults.innerHTML = '';
+                
+                if (results.length === 0) {
+                    searchResults.innerHTML = '<div class="no-results">No results found for "' + searchTerm + '"</div>';
+                } else {
+                    results.forEach(result => {
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'search-result-item';
+                        resultItem.innerHTML = `
+                            <h4>${highlightText(result.title, searchTerm)}</h4>
+                            <p>${highlightText(result.content.substring(0, 100) + '...', searchTerm)}</p>
+                        `;
+                        
+                        resultItem.addEventListener('click', function() {
+                            // Scroll to the relevant section
+                            const section = document.getElementById(result.section);
+                            if (section) {
+                                section.scrollIntoView({ behavior: 'smooth' });
+                            }
+                            searchResults.style.display = 'none';
+                            searchInput.value = '';
+                        });
+                        
+                        searchResults.appendChild(resultItem);
+                    });
+                }
+                
+                searchResults.style.display = 'block';
+            }
+            
+            // Event listeners
+            searchInput.addEventListener('input', function() {
+                performSearch(this.value);
+            });
+            
+            searchInput.addEventListener('focus', function() {
+                if (this.value.length >= 2) {
+                    searchResults.style.display = 'block';
+                }
+            });
+            
+            // Hide search results when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchForm.contains(e.target)) {
+                    searchResults.style.display = 'none';
+                }
+            });
+            
+            // Handle form submission
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (searchInput.value.length >= 2) {
+                    const results = searchData.filter(item => {
+                        return item.title.toLowerCase().includes(searchInput.value.toLowerCase()) || 
+                               item.content.toLowerCase().includes(searchInput.value.toLowerCase());
+                    });
+                    
+                    if (results.length > 0) {
+                        // Scroll to the first result's section
+                        const section = document.getElementById(results[0].section);
+                        if (section) {
+                            section.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                    
+                    searchResults.style.display = 'none';
+                }
+            });
+            
+            // Keyboard navigation for search results
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const firstResult = searchResults.querySelector('.search-result-item');
+                    if (firstResult) {
+                        firstResult.focus();
+                    }
+                }
+            });
+            
+            // Allow keyboard navigation within search results
+            searchResults.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const next = e.target.nextElementSibling || searchResults.querySelector('.search-result-item');
+                    if (next) next.focus();
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    const prev = e.target.previousElementSibling || searchInput;
+                    prev.focus();
+                } else if (e.key === 'Escape') {
+                    searchResults.style.display = 'none';
+                    searchInput.focus();
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
